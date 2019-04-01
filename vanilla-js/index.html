@@ -1,0 +1,250 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="maintheme.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="toolbar">
+
+    </div>
+    <div id="editable-area">
+        <h2>Test</h2>
+    </div>
+    <div id="insert-table">
+        <div id="tableWindow">
+            <div id="tableWindowHead">
+                <div id="tableWindowHeadContent">
+                    Insert a table
+                    <i id="exit" class="fas fa-times"></i>
+                    <div style="clear:both;"></div>
+                </div>
+
+            </div>
+            <div id="tableWindowContent">
+                <table>
+                    <tr>
+                        <td>
+                            Number of columns
+                        </td>
+                        <td>
+                            <input type="text" id="columns" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Number of rows
+                        </td>
+                        <td>
+                            <input type="text" id="rows" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="tableWindowFooter">
+                <div id="twFooterContent">
+                    <button id="addTableButton">
+                        Add table
+                    </button>
+                    <div style="clear:both;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var editor = document.getElementById("editable-area");
+        editor.contentEditable = "true";
+
+
+        const executeCommand = (command) => {
+            document.execCommand(command);
+        }
+
+
+        var buttons = [
+            "bold",
+            "italic",
+            "underline",
+            "createLink",
+            "insertImage",
+            "superscript",
+            "subscript",
+            "undo",
+            "copy",
+            "paste",
+            "indent",
+            "outdent",
+            "justifyLeft",
+            "justifyRight",
+            "justifyCenter",
+            "insertUnorderedList",
+            "table",
+            "info",
+            "view"
+        ];
+        var toolbar = document.getElementById("toolbar");
+
+        buttons.map((button) => {
+            let buttonname = button;
+            if (button === "insertUnorderedList") {
+                buttonname = "list";
+            } else if (button === "justifyLeft") {
+                buttonname = "align-left";
+            }
+            else if (button === "justifyCenter") {
+                buttonname = "align-center";
+            }
+            else if (button === "justifyRight") {
+                buttonname = "align-right";
+            }
+            else if (button === "view") {
+                buttonname = "eye";
+            }
+            else if (button === "createLink") {
+                buttonname = "link";
+            }
+            else if (button === "insertImage") {
+                buttonname = "image";
+            }
+            else if(button === "info")  {
+                buttonname = "info-circle";
+            }
+            toolbar.innerHTML += `<button id="${button}">
+            <b><i class="fas fa-${buttonname}"></i></b>
+        </button>`;
+        });
+        buttons.map((button) => {
+            currentButton = document.getElementById(button);
+            currentButton.addEventListener("click", function () {
+                executeCommand(button)
+            }, false);
+        });
+        tableButton = document.getElementById("table");
+        linkButton = document.getElementById("createLink");
+        imageButton = document.getElementById("insertImage");
+        createLinkFunction = () => {
+            var link = prompt("Enter the URL.");
+            document.execCommand("createLink", "false", link);
+        }
+        createImageFunction = () => {
+            var link = prompt("Enter the URL.");
+            document.execCommand("insertImage", "false", link);
+        }
+        tableFunction = () => {
+            document.getElementById("insert-table").setAttribute("style", "display:block;");
+       
+        };
+        const viewFunction = () => {
+            editor.contentEditable = editor.contentEditable === "false" ? "true" : "false";
+        };
+        viewButton = document.getElementById("view");
+        infoButton = document.getElementById("info");
+        tableButton.addEventListener("click", tableFunction);
+        linkButton.addEventListener("click", createLinkFunction);
+        imageButton.addEventListener("click", createImageFunction);
+        exitButton = document.getElementById("exit");
+        exitButton.addEventListener("click", () => {
+            document.getElementById("insert-table").setAttribute("style", "display:none;");
+        });
+        viewButton.addEventListener("click", () => {
+            viewFunction();
+        });
+        // addTableButton.addEventListener("click", (e) => {
+        //   document.execCommand("insertHTML", false,  `
+        //     <table style="border:1px;">
+        //         <thead>
+        //         <tr>
+        //             <td>
+        //             </td>
+        //             <td>
+        //             </td>
+        //         </tr>
+        //         </thead>
+        //         <tbody>
+
+        //         </tbody>
+        //     </table>`);
+        // document.execCommand("insertHTML", false,  `
+        //     <table style="border:1px;">
+        //         <thead>
+        //         <tr>
+        //             <td>
+        //             </td>
+        //             <td>
+        //             </td>
+        //         </tr>
+        //         </thead>
+        //         <tbody>
+
+        //         </tbody>
+        //     </table>`);
+        
+            // document.getElementById("insert-table").setAttribute("style", "display:none;");
+        // });
+        infoButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            document.execCommand("insertHTML", false,
+            `
+            <div id="info-box-with-image">
+                <div id="image">
+                    Put an image here
+                </div>
+                <div id="description">
+                    Write a description too.
+                </div>
+            </div>
+            <div style="clear:both;"></div>
+            `
+            );
+        });
+        addTableButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            // alert("test");
+            var columns = document.getElementById("columns").value;
+            var rows = document.getElementById("rows").value;
+            document.execCommand("bold");
+            let table ="";
+            table += `
+            <table style="border:1px;">
+                <thead>
+                <tr>
+            `;
+            for (let i = 0; i < columns; i++) {
+                table += `
+                <td></td>
+                `;
+            }
+            table += `
+                </tr>
+                </thead>
+                `;
+            table += `<tbody>
+                `;
+            for (let i = 0; i < rows; i++) {
+                table += `<tr>
+                    `;
+
+                for (let i = 0; i < columns; i++) {
+                    table += `<td></td>
+                    `;
+                }
+                table += `
+                </tr>
+                `;
+
+            }
+
+            table+=`</tbody>
+                </table>`;
+            console.log(table);
+            document.execCommand("insertHTML",false,
+        table
+            );    
+            document.getElementById("insert-table").setAttribute("style", "display:none;");
+        })  
+    </script>
+</body>
+
+</html>
